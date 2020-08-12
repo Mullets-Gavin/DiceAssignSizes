@@ -17,6 +17,9 @@ end})
 
 --// functions
 local function Resize(element,scale,min,max)
+	scale = scale or 1
+	min = min or 0
+	max = max or 1
 	local viewportSize = Services['Workspace'].CurrentCamera.ViewportSize
 	if viewportSize.Y <= 700 then
 		AssignSize.OverrideMobile = true
