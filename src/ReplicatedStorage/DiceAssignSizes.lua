@@ -43,8 +43,8 @@ local function Resize(element,scale,min,max)
 		local clampY = math.clamp(OGSize.Y.Scale * uiSize, min, max)
 		element.Size = UDim2.new(clampX, 0, clampY, 0)
 		local absoluteY = element.AbsoluteSize.Y
-		if absoluteY < 32 then
-			element.Size = UDim2.new(clampX, 0, 0, 32)
+		if absoluteY < 36 then
+			Resize(element,scale * 2,min,max)
 		end
 	end
 end
