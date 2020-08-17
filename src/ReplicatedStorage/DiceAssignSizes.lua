@@ -8,6 +8,10 @@ local AssignSize = {}
 AssignSize.Events = {}
 AssignSize.Types = {'Frame','ImageLabel','ImageButton','TextButton','TextLabel','TextBox'}
 AssignSize.OverrideMobile = false
+AssignSize.Enums = {
+	['Mobile'] = {};
+	['Computer'] = {};
+}
 
 --// services
 local LoadLibrary = require(game:GetService('ReplicatedStorage'):WaitForChild('PlayingCards'))
@@ -17,13 +21,31 @@ local Services = setmetatable({}, {__index = function(cache, serviceName)
 end})
 
 --// functions
-local function Filter(element)
-	for index,enum in pairs(AssignSize.Types) do
-		if element:IsA(enum) then
+local function Filter(element,enum,value)
+	if enum ~= nil and value ~= nil then
+		if AssignSize.Enums[enum] then
+			AssignSize.Enums[enum][element] = value
 			return true
+		end
+	elseif not enum and not value then
+		for index,type in pairs(AssignSize.Types) do
+			if element:IsA(type) then
+				return true
+			end
 		end
 	end
 	return false
+end
+
+local function Valid(element,enum)
+	if element ~= nil and enum ~= nil then
+		if AssignSize.Enums[enum] then
+			if AssignSize.Enums[enum][element] ~= nil then
+				return AssignSize.Enums[enum][element]
+			end
+		end
+	end
+	return true
 end
 
 local function Resize(element,scale,min,max)
@@ -38,11 +60,12 @@ local function Resize(element,scale,min,max)
 	end
 	local OGSize = AssignSize.Events[element]['OGSize']
 	if Services['UserInputService'].TouchEnabled or AssignSize.OverrideMobile then
+		if not Valid(element,AssignSize.Enums.Mobile) then return end
 		local uiSize = (viewportSize.X/viewportSize.Y) * scale
 		local clampX = math.clamp(OGSize.X.Scale * uiSize, min, max)
 		local clampY = math.clamp(OGSize.Y.Scale * uiSize, min, max)
 		element.Size = UDim2.new(clampX, 0, clampY, 0)
-	else
+	elseif Valid(element,AssignSize.Enums.Computer) then
 		local uiSize
 		if (viewportSize.X/viewportSize.Y) >= 2 then
 			uiSize = (viewportSize.X/viewportSize.Y) * (scale/3.5)
@@ -61,6 +84,7 @@ end
 
 return function(element,scale,min,max)
 	if Filter(element) then
+		if Filter(element,scale,min) then return end
 		if AssignSize.Events[element] then
 			AssignSize.Events[element]['Event']:Disconnect()
 		else
