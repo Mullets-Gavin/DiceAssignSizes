@@ -6,6 +6,7 @@
 --// logic
 local AssignSize = {}
 AssignSize.Events = {}
+AssignSize.Types = {'Frame','ImageLabel','ImageButton','TextButton','TextLabel','TextBox'}
 AssignSize.OverrideMobile = false
 
 --// services
@@ -16,6 +17,15 @@ local Services = setmetatable({}, {__index = function(cache, serviceName)
 end})
 
 --// functions
+local function Filter(element)
+	for index,enum in pairs(AssignSize.Types) do
+		if element:IsA(enum) then
+			return true
+		end
+	end
+	return false
+end
+
 local function Resize(element,scale,min,max)
 	scale = scale or 1
 	min = min or 0
@@ -50,7 +60,7 @@ local function Resize(element,scale,min,max)
 end
 
 return function(element,scale,min,max)
-	if element:IsA('Frame') or element:IsA('ImageLabel') then
+	if Filter(element) then
 		if AssignSize.Events[element] then
 			AssignSize.Events[element]['Event']:Disconnect()
 		else
