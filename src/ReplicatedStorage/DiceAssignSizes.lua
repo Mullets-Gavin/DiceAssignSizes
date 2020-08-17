@@ -76,5 +76,8 @@ return function(element,scale,min,max)
 			Resize(element,scale,min,max)
 		end)
 		AssignSize.Events[element]['Event'] = event
+		return true
 	end
+	warn('[ASSIGN SIZES]:','Unexpected element type, you can only use GUI elements |','Class used:',element.ClassName,'| Name:',element.Name)
+	return false
 end
