@@ -6,7 +6,6 @@
 --// logic
 local AssignSize = {}
 AssignSize.Events = {}
-AssignSize.Types = {'Frame','ImageLabel','ImageButton','TextButton','TextLabel','TextBox'}
 AssignSize.OverrideMobile = false
 AssignSize.Enums = {
 	['Mobile'] = {};
@@ -28,10 +27,8 @@ local function Filter(element,enum,value)
 			return true
 		end
 	elseif not enum and not value then
-		for index,type in pairs(AssignSize.Types) do
-			if element:IsA(type) then
-				return true
-			end
+		if element:IsA('GuiObject') then
+			return true
 		end
 	end
 	return false
